@@ -31,14 +31,9 @@ public class HttpRequest {
         BufferedReader in = new BufferedReader(
                                 new InputStreamReader(
                                 urlConnection.getInputStream()));
-        String inputLine;
-        String strJson = "";
-        while ((inputLine = in.readLine()) != null) 
-            strJson = strJson + inputLine;
-        in.close();
         
         JSONParser parser = new JSONParser();
-        JSONArray jsonArraySettings = (JSONArray) parser.parse(strJson);
+        JSONArray jsonArraySettings = (JSONArray) parser.parse(in);
         
         return jsonArraySettings;
     }
