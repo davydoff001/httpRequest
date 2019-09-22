@@ -1,50 +1,64 @@
 
+import com.example.httprequest.CcConfigKey;
 import com.example.httprequest.CcConfigKeyList;
+import com.example.httprequest.CcConfigKeyMap;
+import com.example.httprequest.CcConfigKeyString;
+import com.example.httprequest.CcDataType;
 import com.example.httprequest.CcFrontOfficeApi;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.Test;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
  * @author Alexandr
  */
+
 public class CcFrontOfficeApiTest {
     
     private final String apiKey = ".fUHNtshXuuPfPoFSlm4gyZBhIVOiNZL";
     private final String gatewayRegion = "us-west-1";
     private final String gatewayApiId = "ew2yseij13";
     private final String envName = "dev";
-    
-    public void sendRequestWithPathAndApiKey(String configPath) throws IOException, MalformedURLException, ParseException{
-
-//        JSONArray response = getConfigKeys(
-//                "https://ew2yseij13.execute-api.us-west-1.amazonaws.com/dev/config" + configPath, apiKey);
-//        Iterator i = response.iterator();
-//
-//        while (i.hasNext()) {
-//            JSONObject innerObj = (JSONObject) i.next();
-//            System.out.println("path " + innerObj.get("path")
-//                    + " dataType " + innerObj.get("dataType")
-//                    + " value " + innerObj.get("value"));
-//        }
+       
+    @Test
+    public void testJsonReader() throws Exception{
+        Class aClass = CcFrontOfficeApiTest.class; 
+        InputStream resourceAsStream = aClass.getResourceAsStream("test.json");
+        
+        CcConfigKeyMap actualMap = new CcConfigKeyMap();
+        CcFrontOfficeApi api = new CcFrontOfficeApi(gatewayRegion, gatewayApiId, envName, apiKey);
+        api.parseJson(resourceAsStream, actualMap);
+        
+        Assert.assertEquals(4, actualMap.size());
     }
     
     @Test
-    public void getApiKeyWithEmptyConfigPath() throws IOException, MalformedURLException, ParseException {
-        CcConfigKeyList list = new CcConfigKeyList();
+    public void getApiKeyWithEmptyConfigPath() throws IOException, MalformedURLException, ParseException, Exception {
+        CcConfigKeyMap actualMap = new CcConfigKeyMap();
         CcFrontOfficeApi api = new CcFrontOfficeApi(gatewayRegion, gatewayApiId, envName, apiKey);
-        api.getConfigKeys("",list);
-        Assert.assertEquals(4, list.size());
+        api.getConfigKeysJackson("", actualMap);
+        Assert.assertEquals(4, actualMap.size());
+
+//        CcConfigKey server = actualMap.get("sigma/server");
+//        Assert.assertEquals(CcDataType.String, server.getDataType());
+//        CcConfigKeyString strKey = (CcConfigKeyString) server;
+//        boolean equals = server.equals(strKey);
+//        Assert.assertEquals("192.168.0.1",strKey.getValue());
+        CcConfigKeyMap expectedMap = new CcConfigKeyMap();
+        expectedMap.consumeString("sigma/bgcolor", "white");
+        expectedMap.consumeBool("sigma/active", Boolean.FALSE);
+        expectedMap.consumeString("sigma/server", "192.168.0.1");
+        expectedMap.consumeInt("sigma/omega/LsaPid", 1);
         
+        Assert.assertEquals(actualMap, expectedMap);
+
     }
     
     @Test
@@ -60,11 +74,13 @@ public class CcFrontOfficeApiTest {
     @Test
     public void getApiKeyByNamespace() throws IOException, MalformedURLException, ParseException {
         
-        CcConfigKeyList list = new CcConfigKeyList();
+        CcConfigKeyMap map = new CcConfigKeyMap();
         CcFrontOfficeApi api = new CcFrontOfficeApi(gatewayRegion, gatewayApiId, envName, apiKey);
-        api.getConfigKeys("/sigma/",list);
-        Assert.assertEquals(4, list.size());
+        api.getConfigKeys("/sigma/",map);
+        Assert.assertEquals(4, map.size());
         
+        
+              
     }
 
 }

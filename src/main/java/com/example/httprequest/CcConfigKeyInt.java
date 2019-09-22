@@ -19,7 +19,7 @@ public class CcConfigKeyInt extends CcConfigKey{
     }
 
     @Override
-    public Object getValue() {
+    public Integer getValue() {
         return _value;
     }
 

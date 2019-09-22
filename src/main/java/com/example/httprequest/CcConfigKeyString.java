@@ -18,7 +18,7 @@ public class CcConfigKeyString extends CcConfigKey{
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return _value;
     }
 
