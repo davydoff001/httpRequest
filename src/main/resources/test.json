@@ -1,0 +1,17 @@
+[{
+        "path": "sigma/active",
+        "dataType": "Boolean",
+        "value": false
+    }, {
+        "path": "sigma/bgcolor",
+        "dataType": "String",
+        "value": "white"
+    }, {
+        "path": "sigma/omega/LsaPid",
+        "dataType": "Integer",
+        "value": "1"
+    }, {
+        "path": "sigma/server",
+        "dataType": "String",
+        "value": "192.168.0.1"
+    }]
